@@ -56,7 +56,6 @@ type Fs struct {
 	client         *rest.Client
 	pacer          *fs.Pacer
 	dirCache       *dircache.DirCache
-	viewer         *viewerResponse
 }
 
 // Object describes an estuary object
@@ -208,14 +207,6 @@ func newFs(ctx context.Context, name string, root string, m configmap.Mapper) (i
 		f.client.SetHeader("Authorization", "Bearer "+f.opt.Token)
 	}
 
-	var viewer viewerResponse
-
-	if viewer, err = f.fetchViewer(ctx); err != nil {
-		fs.Errorf(f, "Can't fetch viewer information for this user")
-		return nil, err
-	}
-
-	f.viewer = &viewer
 	f.dirCache = dircache.New(root, "", f)
 
 	err = f.dirCache.FindRoot(ctx, false)

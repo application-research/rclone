@@ -15,16 +15,6 @@ const (
 	overwrite = "overwrite"
 )
 
-func (f *Fs) fetchViewer(ctx context.Context) (response viewerResponse, err error) {
-	opts := rest.Opts{
-		Method: "GET",
-		Path:   "/viewer",
-	}
-
-	_, err = f.client.CallJSON(ctx, &opts, nil, &response)
-	return
-}
-
 func (f *Fs) createCollection(ctx context.Context, name string) (id string, err error) {
 	var resp *http.Response
 	var collection collection
