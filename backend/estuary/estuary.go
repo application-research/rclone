@@ -40,8 +40,9 @@ var (
 
 // Options config options for our backend
 type Options struct {
-	Token string `config:"token"`
-	URL   string `config:"url"`
+	Token     string `config:"token"`
+	URL       string `config:"url"`
+	UploadUrl string `config:"uploadUrl"`
 }
 
 // Fs represents a remote estuary server
@@ -115,6 +116,10 @@ func init() {
 			Name:    "url",
 			Help:    "Estuary URL",
 			Default: "https://api.estuary.tech",
+		}, {
+			Name:    "uploadUrl",
+			Help:    "Estuary Upload URL",
+			Default: "https://upload.estuary.tech",
 		}},
 	})
 
@@ -670,6 +675,8 @@ func (o *Object) upload(ctx context.Context, in io.Reader, leaf, dirID string, s
 
 	opts := rest.Opts{
 		Method:               "POST",
+		Path:                 "/content/add",
+		RootURL:              o.fs.opt.UploadUrl,
 		Body:                 in,
 		MultipartContentName: "data",
 		MultipartFileName:    leaf,

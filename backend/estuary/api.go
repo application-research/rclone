@@ -2,7 +2,6 @@ package estuary
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -128,29 +127,16 @@ func (o *Object) removeContentFromCollection(ctx context.Context, collectionID s
 }
 
 func (o *Object) addContent(ctx context.Context, opts rest.Opts) (result contentAdd, err error) {
-	endpoints := o.fs.viewer.Settings.UploadEndpoints
 	params := url.Values{}
 	params.Set(overwrite, "true")
 	opts.Parameters = params
 
-	if len(endpoints) == 0 {
-		return contentAdd{}, errors.New("No upload endpoint for object")
-	}
-
-	endpoint := 0
-
 	var response *http.Response
 	err = o.fs.pacer.Call(func() (bool, error) {
-		if endpoint == len(endpoints) {
-			return false, errAllEndpointsFailed
-		}
 
-		// Note: "Path" is actually embedded in the upload endpoint, which we use as the RootURL
-		opts.RootURL = endpoints[endpoint]
 		response, err = o.fs.client.CallJSON(ctx, &opts, nil, &result)
 		if contentAddingDisabled(response, err) {
-			fs.Debugf(o, "failed upload, retry w/ next upload endpoint")
-			endpoint++
+			fs.Debugf(o, "failed upload, retrying")
 			return true, err
 		}
 
