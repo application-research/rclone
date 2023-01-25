@@ -695,17 +695,17 @@ func (o *Object) upload(ctx context.Context, in io.Reader, leaf, dirID string, s
 		return err
 	}
 
-	uuid := o.fs.root
-	absPath := "/"
 	if dirID != "" {
+		uuid := o.fs.root
+		absPath := "/"
 		uuid, absPath = splitDir(dirID)
 		fs.Debugf(o, "uploading to collection %v at path %v", uuid, absPath)
-	}
 
-	contentIds := []uint{uint(integerID)}
-	err = o.fs.addContentsToCollection(ctx, uuid, absPath, contentIds)
-	if err != nil {
-		return err
+		contentIds := []uint{uint(integerID)}
+		err = o.fs.addContentsToCollection(ctx, uuid, absPath, contentIds)
+		if err != nil {
+			return err
+		}
 	}
 
 	o.cid = result.Cid
