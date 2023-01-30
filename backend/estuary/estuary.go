@@ -446,7 +446,6 @@ func (f *Fs) List(ctx context.Context, dir string) (entries fs.DirEntries, err e
 				return nil, err
 			}
 			entries = append(entries, o)
-			break
 		}
 	}
 	return entries, nil
