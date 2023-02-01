@@ -438,8 +438,7 @@ func (f *Fs) List(ctx context.Context, dir string) (entries fs.DirEntries, err e
 			}
 			modTime := pin.Meta["modTime"]
 			if modTime == nil {
-				// Only object created by rclone will have modTime
-				modTime = "0"
+				modTime = strconv.FormatInt(time.Now().Unix(), 10)
 			}
 			o, err := f.newObjectWithInfo(ctx, path.Join(dir, item.Name), parseTimeString(modTime.(string)), &content{ID: item.ContentID, Cid: item.Cid, Size: item.Size})
 			if err != nil {
